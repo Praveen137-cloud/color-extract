@@ -2,9 +2,10 @@
   "name": "colorsnap",
   "version": "1.0.0",
   "description": "ColorSnap – Modern client-side Image to Color Palette Extractor",
+  "main": "index.js",
   "scripts": {
     "build": "node scripts/build.js",
-    "start": "node server/server.js",
+    "start": "node index.js",
     "test": "node tests/test-extractor.js && node tests/test-integration.js && node tests/test-server.js"
   },
   "keywords": [

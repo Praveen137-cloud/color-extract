@@ -1,6 +1,6 @@
 /**
  * Production Build Script for Vercel / Netlify / CI
- * Compiles and outputs production-ready static assets into `dist/`
+ * Compiles and outputs production-ready static assets into `dist/` and `public/`
  */
 
 const fs = require('fs');
@@ -8,14 +8,15 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
+const PUBLIC = path.join(ROOT, 'public');
 
-// 1. Clean and create dist directory
-if (fs.existsSync(DIST)) {
-  fs.rmSync(DIST, { recursive: true, force: true });
+function prepareDirectory(dir) {
+  if (fs.existsSync(dir)) {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+  fs.mkdirSync(dir, { recursive: true });
 }
-fs.mkdirSync(DIST, { recursive: true });
 
-// 2. Helper: Copy directory recursively
 function copyDirSync(src, dest) {
   if (!fs.existsSync(src)) return;
   fs.mkdirSync(dest, { recursive: true });
@@ -33,14 +34,21 @@ function copyDirSync(src, dest) {
   }
 }
 
-// 3. Copy css, js, and assets to dist
+prepareDirectory(DIST);
+prepareDirectory(PUBLIC);
+
+const htmlPath = path.join(ROOT, 'index.html');
+
+// Populate dist/
 copyDirSync(path.join(ROOT, 'css'), path.join(DIST, 'css'));
 copyDirSync(path.join(ROOT, 'js'), path.join(DIST, 'js'));
 copyDirSync(path.join(ROOT, 'assets'), path.join(DIST, 'assets'));
+fs.copyFileSync(htmlPath, path.join(DIST, 'index.html'));
 
-// 4. Copy index.html and ensure self-contained fallback
-const htmlPath = path.join(ROOT, 'index.html');
-const destHtmlPath = path.join(DIST, 'index.html');
-fs.copyFileSync(htmlPath, destHtmlPath);
+// Populate public/
+copyDirSync(path.join(ROOT, 'css'), path.join(PUBLIC, 'css'));
+copyDirSync(path.join(ROOT, 'js'), path.join(PUBLIC, 'js'));
+copyDirSync(path.join(ROOT, 'assets'), path.join(PUBLIC, 'assets'));
+fs.copyFileSync(htmlPath, path.join(PUBLIC, 'index.html'));
 
-console.log('Build completed successfully! Assets output to dist/');
+console.log('Build completed successfully! Assets output to dist/ and public/');
