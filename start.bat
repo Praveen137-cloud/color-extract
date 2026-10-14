@@ -45,7 +45,7 @@ start /b cmd /c "timeout /t 2 /nobreak >nul && start http://localhost:3000"
 echo [*] Starting ColorSnap local development server on http://localhost:3000
 echo [*] Press Ctrl+C at any time in this window to stop the server.
 echo.
-node server.js
+node server/server.js
 
 if %ERRORLEVEL% NEQ 0 (
     echo.

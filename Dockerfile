@@ -14,4 +14,4 @@ ENV PORT=3000
 EXPOSE 3000
 
 # Run native zero-dependency HTTP server
-CMD ["node", "server.js"]
+CMD ["node", "server/server.js"]

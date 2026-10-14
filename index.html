@@ -15,7 +15,14 @@
   <!-- Core Stylesheet & Favicon -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231A2421'><path d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13A1.64 1.64 0 0 1 14.44 16.4h1.99c3.05 0 5.57-2.5 5.57-5.55C22 6.01 17.5 2 12 2z'/><circle cx='7.5' cy='11.5' r='1.5' fill='%23FFFFFF'/><circle cx='12' cy='7.5' r='1.5' fill='%23FFFFFF'/><circle cx='16.5' cy='11.5' r='1.5' fill='%23FFFFFF'/></svg>">
-<body>
+
+  <style>
+    /* Critical inline safeguards: prevent FOUC and bound default SVG dimensions */
+    .global-drag-overlay { display: none; }
+    .global-drag-overlay.active { display: flex !important; }
+    svg { max-width: 100%; }
+  </style>
+</head>
 
   <!-- Global Full-Page Drag and Drop Overlay -->
   <div id="global-drag-overlay" class="global-drag-overlay" aria-hidden="true">

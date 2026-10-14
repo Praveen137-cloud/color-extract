@@ -10,7 +10,7 @@ const { spawn } = require('child_process');
 console.log('Testing ColorSnap Static HTTP Server...\n');
 
 const TEST_PORT = 3891;
-const serverProcess = spawn('node', ['server.js'], {
+const serverProcess = spawn('node', ['server/server.js'], {
   env: { ...process.env, PORT: TEST_PORT },
   cwd: path.resolve(__dirname, '..')
 });
