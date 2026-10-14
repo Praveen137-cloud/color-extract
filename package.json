@@ -1,0 +1,21 @@
+{
+  "name": "colorsnap",
+  "version": "1.0.0",
+  "description": "ColorSnap – Modern client-side Image to Color Palette Extractor",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node -e \"console.log('Production build ready.')\"",
+    "test": "node tests/test-extractor.js && node tests/test-integration.js && node tests/test-server.js"
+  },
+  "keywords": [
+    "color-palette",
+    "color-extractor",
+    "k-means",
+    "palette-generator",
+    "dominant-colors",
+    "design-tool"
+  ],
+  "author": "ColorSnap Team",
+  "license": "MIT"
+}

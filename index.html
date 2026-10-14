@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ColorSnap – Image to Color Palette Extractor & Audit Tool</title>
+  <meta name="description" content="Instantly analyze images and extract five dominant colors. Free, 100% client-side color palette audit tool inspired by modern SaaS design.">
+  <meta name="theme-color" content="#0062FF">
+
+  <!-- Typography: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheet & Favicon -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231A2421'><path d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13A1.64 1.64 0 0 1 14.44 16.4h1.99c3.05 0 5.57-2.5 5.57-5.55C22 6.01 17.5 2 12 2z'/><circle cx='7.5' cy='11.5' r='1.5' fill='%23FFFFFF'/><circle cx='12' cy='7.5' r='1.5' fill='%23FFFFFF'/><circle cx='16.5' cy='11.5' r='1.5' fill='%23FFFFFF'/></svg>">
+<body>
+
+  <!-- Global Full-Page Drag and Drop Overlay -->
+  <div id="global-drag-overlay" class="global-drag-overlay" aria-hidden="true">
+    <div class="global-drag-box">
+      <div class="global-drag-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <h2 class="global-drag-title">Drop Your Image Here</h2>
+      <p class="global-drag-sub">Release anywhere to instantly extract 5 dominant colors</p>
+    </div>
+  </div>
+
+  <!-- Top Application Header (SEOptimer Style) -->
+  <header class="app-header">
+    <div class="app-container header-inner">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true" title="ColorSnap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13A1.64 1.64 0 0 1 14.44 16.4h1.99c3.05 0 5.57-2.5 5.57-5.55C22 6.01 17.5 2 12 2z"/>
+            <circle cx="7.5" cy="11.5" r="1.5" fill="currentColor"/>
+            <circle cx="12" cy="7.5" r="1.5" fill="currentColor"/>
+            <circle cx="16.5" cy="11.5" r="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">COLOR-SNAP</span>
+        </div>
+        <span class="badge-free">Free Tool</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="header-nav" aria-label="Main Navigation">
+        <a href="#main-content" class="nav-link active">Color Audit</a>
+        <a href="#features-trust" class="nav-link">Features</a>
+        <a href="#sample-images-bar" class="nav-link">Sample Images</a>
+        <a href="#history-section" class="nav-link">History</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="theme-toggle" class="btn-theme-toggle" aria-label="Toggle light and dark theme" title="Toggle theme">
+          <!-- Sun Icon (shown in dark mode) -->
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <!-- Moon Icon (shown in light mode) -->
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section (SEOptimer Style) -->
+  <section class="hero-section" aria-labelledby="hero-title">
+    <div class="app-container">
+      <div class="hero-badge-pill">
+        <span class="hero-badge-dot" aria-hidden="true"></span>
+        <span>Free • Instant • No sign-up required</span>
+      </div>
+      <h1 id="hero-title" class="hero-title">
+        Turn any image into a beautiful <span class="highlight">color palette</span>.
+      </h1>
+      <p class="hero-subtitle">
+        Upload an image, discover its five dominant colors, and copy the exact color codes in seconds.
+      </p>
+
+      <!-- SEOptimer-Style Audit Input / Upload Card -->
+      <div class="audit-card-wrapper">
+        <div id="drop-zone" class="audit-input-card" role="button" tabindex="0" aria-label="Drop your image here or click to choose an image">
+          <div class="audit-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <p class="audit-main-text">Drop your image here</p>
+          <p class="audit-sub-text">or browse files from your device</p>
+          <div class="audit-cta-row">
+            <button type="button" id="btn-browse" class="btn-audit-cta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              Choose Image
+            </button>
+            <span class="file-format-hint">Supported formats: JPG, JPEG, PNG, WebP (up to 15 MB)</span>
+          </div>
+          <input type="file" id="file-input" class="file-input-hidden" accept="image/jpeg,image/png,image/webp">
+        </div>
+
+        <!-- Quick Sample Images Bar -->
+        <div class="sample-images-bar" id="sample-images-bar">
+          <span class="sample-bar-label">Or try a sample image:</span>
+          <button type="button" class="sample-btn" data-sample="sunset">
+            <span class="sample-thumb-indicator" style="background: linear-gradient(135deg, #F97316, #EC4899);"></span>
+            Sunset Glow
+          </button>
+          <button type="button" class="sample-btn" data-sample="nature">
+            <span class="sample-thumb-indicator" style="background: linear-gradient(135deg, #10B981, #065F46);"></span>
+            Forest Meadow
+          </button>
+          <button type="button" class="sample-btn" data-sample="ocean">
+            <span class="sample-thumb-indicator" style="background: linear-gradient(135deg, #0062FF, #0EA5E9);"></span>
+            Deep Ocean
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="app-container" id="main-content">
+
+    <!-- SEOptimer Trust / Feature Metrics Strip -->
+    <section class="trust-strip" id="features-trust" aria-label="Feature Overview">
+      <div class="trust-item">
+        <div class="trust-icon blue" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+            <path d="M2 12h20"/>
+          </svg>
+        </div>
+        <div class="trust-text">
+          <span class="trust-title">5 Dominant Colors</span>
+          <span class="trust-desc">K-Means++ & Redmean algorithm</span>
+        </div>
+      </div>
+
+      <div class="trust-item">
+        <div class="trust-icon green" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="trust-text">
+          <span class="trust-title">100% Private</span>
+          <span class="trust-desc">Zero server uploads, fully local</span>
+        </div>
+      </div>
+
+      <div class="trust-item">
+        <div class="trust-icon navy" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div class="trust-text">
+          <span class="trust-title">WCAG Compliant</span>
+          <span class="trust-desc">Dynamic contrast calculation</span>
+        </div>
+      </div>
+
+      <div class="trust-item">
+        <div class="trust-icon amber" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </div>
+        <div class="trust-text">
+          <span class="trust-title">Instant Export</span>
+          <span class="trust-desc">JSON, CSS Variables & PNG Card</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Loading State Card -->
+    <div id="loading-state" class="loading-card" aria-live="assertive" role="alert">
+      <div class="spinner" aria-hidden="true"></div>
+      <h2 class="loading-text">Extracting your colors...</h2>
+      <p class="loading-subtext">Sampling pixels and computing dominant color clusters</p>
+    </div>
+
+    <!-- Error State Card -->
+    <div id="error-state" class="error-card" role="alert" aria-live="assertive">
+      <div class="error-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <div class="error-content">
+        <h2 class="error-title">Unable to process image</h2>
+        <p id="error-message-text" class="error-message">Something went wrong while reading your image. Please try again with a valid JPG, PNG, or WebP file.</p>
+        <button type="button" id="btn-retry" class="btn-retry">Try Another Image</button>
+      </div>
+    </div>
+
+    <!-- Active Analysis / Workspace Section -->
+    <div id="analysis-workspace" class="analysis-workspace">
+      
+      <!-- SEOptimer-Style Overall Palette Scorecard -->
+      <section class="audit-scorecard" aria-label="Palette Audit Scorecard">
+        <div class="score-badge-box">
+          <div class="score-circle">
+            <span class="score-grade">A+</span>
+            <span class="score-label">Score 98</span>
+          </div>
+          <div class="score-text-wrap">
+            <span class="score-heading">Palette Harmony</span>
+            <span class="score-subheading">Optimal Color Balance</span>
+          </div>
+        </div>
+
+        <!-- Continuous Proportional Color Distribution Bar -->
+        <div class="distribution-bar-section">
+          <div class="distribution-bar-label">
+            <span>Color Distribution Ratio</span>
+            <span id="distribution-pixels-count">Sampled 40,000 pixels</span>
+          </div>
+          <div id="color-ratio-bar" class="color-ratio-bar">
+            <!-- Dynamic Proportional Bar Segments Rendered via JS -->
+          </div>
+        </div>
+
+        <div>
+          <button type="button" id="btn-reextract" class="btn-secondary" title="Recompute colors">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+            Re-extract Palette
+          </button>
+        </div>
+      </section>
+
+      <!-- Uploaded Image Preview & Metadata -->
+      <section class="preview-card" aria-label="Uploaded Image Details">
+        <div class="preview-thumbnail-wrap">
+          <img id="preview-img" class="preview-thumbnail" alt="Uploaded preview">
+        </div>
+        <div class="preview-info">
+          <h2 id="preview-filename" class="preview-filename">image.jpg</h2>
+          <div class="preview-meta-tags">
+            <span class="meta-tag" id="preview-dimensions" title="Image Dimensions">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3H3v18h18V3z"/><path d="M21 9H3"/><path d="M9 21V3"/></svg>
+              <span>1920 × 1080 px</span>
+            </span>
+            <span class="meta-tag" id="preview-filesize" title="File Size">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>1.2 MB</span>
+            </span>
+            <span class="meta-tag" id="preview-format" title="Image Format">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              <span>JPEG</span>
+            </span>
+          </div>
+        </div>
+        <div class="preview-controls">
+          <button type="button" id="btn-change-image" class="btn-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            Change Image
+          </button>
+        </div>
+      </section>
+
+      <!-- Color Palette Display -->
+      <section class="palette-section" aria-labelledby="palette-title">
+        <div class="section-header">
+          <div>
+            <h2 id="palette-title" class="section-title">Your Color Palette</h2>
+            <p class="section-subtitle">Five dominant colors extracted from your image.</p>
+          </div>
+        </div>
+
+        <!-- 5 Swatches Grid (SEOptimer Audit Cards) -->
+        <div id="palette-grid" class="palette-grid">
+          <!-- Dynamic Swatch Cards Rendered via JS -->
+        </div>
+
+        <!-- Palette Action Buttons -->
+        <div class="palette-actions-bar" aria-label="Palette Actions">
+          <div class="actions-group">
+            <button type="button" id="btn-copy-all-hex" class="btn-action btn-action-primary" title="Copy all 5 HEX values to clipboard">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Copy All HEX Codes
+            </button>
+            <button type="button" id="btn-copy-all-rgb" class="btn-action btn-action-success" title="Copy all 5 RGB values to clipboard">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Copy All RGB Codes
+            </button>
+          </div>
+
+          <div class="actions-divider" aria-hidden="true"></div>
+
+          <div class="actions-group">
+            <button type="button" id="btn-download-json" class="btn-action" title="Download palette data as JSON">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download Palette (.json)
+            </button>
+            <button type="button" id="btn-download-css" class="btn-action" title="Download as CSS custom properties">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"/>
+                <polyline points="8 6 2 12 8 18"/>
+              </svg>
+              Download as CSS
+            </button>
+            <button type="button" id="btn-download-img" class="btn-action" title="Download visual palette card graphic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              Download Card (.png)
+            </button>
+          </div>
+
+          <div class="actions-divider" aria-hidden="true"></div>
+
+          <div class="actions-group">
+            <button type="button" id="btn-extract-another" class="btn-action" title="Upload another image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Extract Another Image
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Palette History Section -->
+    <section class="history-section" id="history-section" aria-labelledby="history-title">
+      <div class="history-header">
+        <div class="history-title-wrap">
+          <h2 id="history-title" class="history-title">Palette History</h2>
+          <span class="meta-tag">Last 5 Palettes</span>
+        </div>
+        <button type="button" id="btn-clear-history" class="btn-clear-history" title="Clear all saved history">
+          Clear History
+        </button>
+      </div>
+      <div id="history-list" class="history-list">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (SEOptimer Style) -->
+  <footer class="app-footer">
+    <div class="app-container footer-inner">
+      <div class="footer-privacy-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>100% Client-Side • Local Processing</span>
+      </div>
+      <p class="footer-text">Made for designers and developers. Your images stay on your device.</p>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/color-extractor.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
